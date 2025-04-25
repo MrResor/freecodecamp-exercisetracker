@@ -1,0 +1,121 @@
+openapi: 3.0.3
+
+info:
+  title: Urlshortener Microservice
+  description: Solution of a freecodecamp task for creating a urlshortener microservice.
+  contact:
+    email: jakusienko@gmail.com
+  license:
+    name: MIT
+    url: https://en.wikipedia.org/wiki/MIT_License
+  version: 1.1.0
+
+externalDocs:
+  url: https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice
+  description: FreeCodeCamp
+
+servers:
+  - url: https://urlshortener.profresor.net
+
+paths:
+  /api/urlshortener:
+    post:
+      tags:
+        - endpoints
+      summary: Shorten a URL
+      description: Takes in a URL and returns a shortened version of it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  format: uri
+              example:
+                url: "https://www.google.com"
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/URL"
+        401:
+          description: Invalid URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Invalid url"
+
+  /api/shorturl/{id}:
+    get:
+      tags:
+        - endpoints
+      summary: Get current date
+      description: Get current date in both unix and utc formats
+      responses:
+        301:
+          description: Successful operation, redirecting user to the original URL
+        401:
+          description: Invalid ID, non integer passed as id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "Invalid ID"
+        404:
+          description: ID not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: "No url found for the given ID"
+
+  /api/hello:
+    get:
+      tags:
+        - endpoints
+      summary: API says hello
+      description: Test endpoint to see if the API is running
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  greeting:
+                    type: string
+                example:
+                  greting: "hello API"
+      
+components:
+  schemas:
+    URL:
+      type: object
+      properties:
+        original_url: 
+          type: string
+        short_url:
+          type: integer
+      example: 
+        original_url: "https://www.google.com"
+        short_url: 40
+        
