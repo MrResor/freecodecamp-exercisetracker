@@ -1,0 +1,35 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile_api
+    ports:
+      - "9999:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    volumes:
+      - /home/ubuntu/running/logs/freecodecamp-exercise_tracker:/program/logs
+    environment:
+      NODE_ENV: development
+
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile_db
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGUSER=${USER_LOGIN}
+      - PGPASSWORD=${USER_PASSWORD}
+    volumes:
+      - pg-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${USER_LOGIN} -d exercise_tracker" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+
+volumes:
+  pg-volume:
