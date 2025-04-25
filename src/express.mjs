@@ -3,11 +3,11 @@ import express from 'express';
 import path from 'path';
 
 // import { add_url } from "./api/shorturl/index.js";
-import { docs } from "./api/docs/index.js";
+import { docs } from "./api/docs/index.mjs";
 // import { get_url } from "./api/shorturl/:shorturl/index.js";
-import { hello } from "./api/hello/index.js";
-import { logger } from "./logger.js";
-import { mainView } from "./index.js";
+import { hello } from "./api/hello/index.mjs";
+import { logger } from "./logger.mjs";
+import { mainView } from "./index.mjs";
 
 const app = express();
 const router = express.Router();
@@ -62,9 +62,9 @@ router.use(hello);
 // /api/docs
 router.use(docs);
 // /api/shorturl
-router.use(add_url);
+//router.use(add_url);
 // /api/shorturl/:id
-router.use(get_url);
+//router.use(get_url);
 
 app.use(router);
 
