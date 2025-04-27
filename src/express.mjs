@@ -2,12 +2,13 @@ import cors from 'cors';
 import express from 'express';
 import path from 'path';
 
-// import { add_url } from "./api/shorturl/index.js";
 import { docs } from "./api/docs/index.mjs";
-// import { get_url } from "./api/shorturl/:shorturl/index.js";
+import { exercises } from "./api/users/:id/exercises/index.mjs";
 import { hello } from "./api/hello/index.mjs";
 import { logger } from "./logger.mjs";
+import { logs } from "./api/users/:id/logs/index.mjs";
 import { mainView } from "./index.mjs";
+import { users } from "./api/users/index.mjs";
 
 const app = express();
 const router = express.Router();
@@ -41,7 +42,19 @@ router.use((req, _, next) => {
     });
 
     let ip = Object.hasOwn(req.headers, 'x-forwarded-for') ? req.headers['x-forwarded-for'] : req.ip;
-    let msg = `${req.method} ${req.path} - ${ip}`
+    let query = "";
+    let i = 0;
+    for (const [key, value] of Object.entries(req.query)) {
+        if (i === 0) {
+            query += "?";
+        } else {
+            query += "&";
+        }
+        query += `${key}=${value}`;
+        i++;
+    }
+
+    let msg = `${req.method} ${req.path}${query} - ${ip}`
 
     if (hasRouteToHandle) {
         logger.http(msg);
@@ -61,10 +74,12 @@ router.use(mainView);
 router.use(hello);
 // /api/docs
 router.use(docs);
-// /api/shorturl
-//router.use(add_url);
-// /api/shorturl/:id
-//router.use(get_url);
+// /api/users
+router.use(users);
+// /api/users/:id/exercises
+router.use(exercises);
+// /api/users/:id/logs
+router.use(logs);
 
 app.use(router);
 
