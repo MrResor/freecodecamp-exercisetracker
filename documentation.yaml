@@ -1,7 +1,7 @@
 openapi: 3.0.3
 
 info:
-  title: Urlshortener Microservice
+  title: Exercise Tracker Microservice
   description: Solution of a freecodecamp task for creating a urlshortener microservice.
   contact:
     email: jakusienko@gmail.com
@@ -11,19 +11,19 @@ info:
   version: 1.1.0
 
 externalDocs:
-  url: https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice
+  url: https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/exercise-tracker
   description: FreeCodeCamp
 
 servers:
-  - url: https://urlshortener.profresor.net
+  - url: https://exercisetracker.profresor.net
 
 paths:
-  /api/urlshortener:
+  /api/users:
     post:
       tags:
         - endpoints
-      summary: Shorten a URL
-      description: Takes in a URL and returns a shortened version of it.
+      summary: Add user
+      description: Takes in a username and returns the user object with a unique id.
       requestBody:
         required: true
         content:
@@ -31,20 +31,19 @@ paths:
             schema:
               type: object
               properties:
-                url:
+                username:
                   type: string
-                  format: uri
               example:
-                url: "https://www.google.com"
+                username: "exercise_tracker"
       responses:
         200:
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/URL"
-        401:
-          description: Invalid URL
+                $ref: "#/components/schemas/User"
+        400:
+          description: No username provided
           content:
             application/json:
               schema:
@@ -53,19 +52,65 @@ paths:
                   error:
                     type: string
                 example:
-                  error: "Invalid url"
-
-  /api/shorturl/{id}:
+                  error: "Username is required"
     get:
       tags:
         - endpoints
-      summary: Get current date
-      description: Get current date in both unix and utc formats
+      summary: Get all users
+      description: Returns an array of all users in the database.
       responses:
-        301:
-          description: Successful operation, redirecting user to the original URL
-        401:
-          description: Invalid ID, non integer passed as id
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /api/users/{id}/exercises:
+    post:
+      tags:
+        - endpoints
+      summary: Add exercise
+      description: Takes in a user id, description, duration and optional date fields and returns the user object with the exercise added.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to add an exercise to
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  required: true
+                duration:
+                  type: integer
+                  required: true
+                date:
+                  type: string
+                  format: date-time
+              example:
+                description: Running
+                duration: 30
+                date: 2023-10-01
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: #/components/schemas/Exercise
+        
+        400:
+          description: Incorrect request
           content:
             application/json:
               schema:
@@ -73,10 +118,22 @@ paths:
                 properties:
                   error:
                     type: string
-                example:
-                  error: "Invalid ID"
+              examples:
+                missingFields:
+                  summary: Missing required fields
+                  value:
+                    error: Description and duration are required
+                invalidDuration:
+                  summary: Invalid duration
+                  value:
+                    error: Duration must be a number
+                invalidDate:
+                  summary: Invalid date
+                  value:
+                    error: Date must be a valid date
+        
         404:
-          description: ID not found
+          description: User not found
           content:
             application/json:
               schema:
@@ -85,7 +142,103 @@ paths:
                   error:
                     type: string
                 example:
-                  error: "No url found for the given ID"
+                  error: User not found
+
+  /api/users/{id}/log:
+    get:
+      tags:
+        - endpoints
+      summary: Get user log
+      description: Returns the complete exercise log of a user with the id specified in the path.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to get the log for
+          schema:
+            type: string
+        - name: from
+          in: query
+          description: Filter exercises from this date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: Filter exercises to this date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          description: Limit the number of exercises returned
+          schema:
+            type: integer
+
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  count:
+                    type: integer
+                  log:
+                    type: array
+                    items:
+                      $ref: #/components/schemas/Log
+                example:
+                  username: exercise_tracker
+                  count: 2
+                  _id: id_41
+                  log:
+                    - description: Running
+                      duration: 30
+                      date: Sun Oct 01 2023
+                    - description: Cycling
+                      duration: 45
+                      date: Mon Oct 02 2023
+        400:
+          description: Incorrect request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+              examples:
+                invalidFrom:
+                  summary: Invalid From date
+                  value:
+                    error: From must be a valid date
+                invalidTo:
+                  summary: Invalid To date
+                  value:
+                    error: To must be a valid date
+                FromAfterTo:
+                  summary: From date after To date
+                  value:
+                    error: From date must be before To date
+                invalidLimit:
+                  summary: Invalid Limit
+                  value:
+                    error: Limit must be a number
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                example:
+                  error: User not found
 
   /api/hello:
     get:
@@ -108,14 +261,50 @@ paths:
       
 components:
   schemas:
-    URL:
+    User:
       type: object
       properties:
-        original_url: 
+        username: 
           type: string
-        short_url:
-          type: integer
+        _id:
+          type: string
       example: 
-        original_url: "https://www.google.com"
-        short_url: 40
-        
+        username: "exercise_tracker"
+        _id: "id_41"
+
+    Exercise:
+      type: object
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+        date:
+          type: string
+          format: date-time
+      example:
+        _id: "id_41"
+        username: "exercise_tracker"
+        description: "Running"
+        duration: 30
+        date: "Sun Oct 01 2023"
+
+    Log:
+      type: object
+      properties:
+      description:
+        type: string
+      duration:
+        type: integer
+      date:
+        type: string
+        format: date-time
+      example:
+        description: "Running"
+        duration: 30
+        date: "Sun Oct 01 2023"
+         
