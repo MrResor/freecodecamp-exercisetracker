@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile_api
     ports:
-      - "9999:3000"
+      - "10003:3000"
     depends_on:
       db:
         condition: service_healthy
