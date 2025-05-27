@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_api
+    restart: unless-stopped
     ports:
       - "10003:3000"
     depends_on:
@@ -18,6 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile_db
+    restart: unless-stopped
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - PGUSER=${USER_LOGIN}
