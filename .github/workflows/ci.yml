@@ -19,4 +19,4 @@ jobs:
           echo "USER_PASSWORD=user" >> .env
 
       - name: run the container
-        run: docker compose -f compose_test.yaml up
+        run: docker compose -f compose.test.yaml up
