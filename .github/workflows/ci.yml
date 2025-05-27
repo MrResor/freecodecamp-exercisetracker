@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      - name: Setup .env file
+        run: |
+          echo "POSTGRES_PASSWORD=admin" >> .env
+          echo "USER_LOGIN=user" >> .env
+          echo "USER_PASSWORD=user" >> .env
+
+      - name: run the container
+        run: docker compose -f docker/compose_test.yaml up
