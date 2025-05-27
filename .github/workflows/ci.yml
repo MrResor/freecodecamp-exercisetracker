@@ -15,8 +15,8 @@ jobs:
       - name: Setup .env file
         run: |
           echo "POSTGRES_PASSWORD=admin" >> .env
-          echo "USER_LOGIN=user" >> .env
-          echo "USER_PASSWORD=user" >> .env
+          echo "USER_LOGIN=test" >> .env
+          echo "USER_PASSWORD=test" >> .env
 
       - name: run the container
         run: docker compose -f compose.test.yaml up
