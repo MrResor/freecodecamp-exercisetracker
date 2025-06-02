@@ -8,15 +8,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [23.x]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Audit dependencies
+        run: npm audit fix
     
-      - name: Setup .env file
+      - name: Setup test .env file
         run: |
           echo "POSTGRES_PASSWORD=admin" >> .env
           echo "USER_LOGIN=test" >> .env
           echo "USER_PASSWORD=test" >> .env
+          echo "DB_HOST=localhost" >> .env
 
-      - name: run the container
-        run: docker compose -f compose.test.yaml up
+      - name: Run tests
+        run: npm test
