@@ -9,6 +9,7 @@ const { Pool } = pg;
 class Database {
 
   constructor() {
+    console.log('Database constructor');
     this.Pool = new Pool({
       user: process.env.USER_LOGIN,
       password: process.env.USER_PASSWORD,
@@ -16,6 +17,17 @@ class Database {
       port: 5432,
       database: 'exercise_tracker',
     });
+    console.log(this.Pool)
+  }
+
+  async connect() {
+    try {
+      await this.Pool.connect();
+      db_logger.info('Connected to the database');
+    } catch (error) {
+      db_logger.error(`Error connecting to the database: ${error.message}`);
+      throw error;
+    }
   }
 
   async add_user(username) {
@@ -95,5 +107,7 @@ class Database {
 }
 
 const db = new Database()
+
+await db.connect()
 
 export { db };
