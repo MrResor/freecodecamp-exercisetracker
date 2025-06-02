@@ -26,7 +26,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await container.stop()
-  await container.remove()
 })
 
 describe('/api/users', () => {
