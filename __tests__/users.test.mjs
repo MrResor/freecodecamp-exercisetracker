@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 
-let buildtContainer, container, imageName, app
+let buildtContainer, container, app
 
 beforeAll(async () => {
   buildtContainer = await GenericContainer
@@ -26,12 +26,8 @@ beforeAll(async () => {
   .withWaitStrategy(Wait.forHealthCheck())
   .withNetworkMode('host')
   .start()
-  
-  imageName = container.getImageName // Save the image name
 
-  //dbport = container.getMappedPort(5432)
-
-   // Import the app AFTER the container is up and env vars are set
+  // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs');
   app = mod.app;
 
@@ -70,20 +66,3 @@ describe('/api/users', () => {
   // GET ALL USERS
   // TRY TO ADD USER WITH EMPTY NAME
 })
-
-afterAll(async () => {
-  if (container) {
-    try {
-      await container.stop()
-    } catch (err) { }
-  }
-  if (imageName) {
-    exec(`docker rmi -f ${imageName}`, (err, stdout, stderr) => {
-      if (err) {
-        console.error('Failed to remove image:', stderr);
-      } else {
-        console.log('Removed image:', imageName);
-      }
-    });
-  }
-});

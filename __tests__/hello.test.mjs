@@ -1,9 +1,9 @@
 import 'dotenv/config';
 import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 
-let buildtContainer, container, imageName, app
+let buildtContainer, container,  app
 
 beforeAll(async () => {
   buildtContainer = await GenericContainer
@@ -25,13 +25,9 @@ beforeAll(async () => {
   })
   .withWaitStrategy(Wait.forHealthCheck())
   .withNetworkMode('host')
-  .start()
+    .start()
   
-  imageName = container.getImageName // Save the image name
-
-  //dbport = container.getMappedPort(5432)
-
-   // Import the app AFTER the container is up and env vars are set
+  // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs');
   app = mod.app;
 
