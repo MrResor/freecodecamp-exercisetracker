@@ -54,7 +54,7 @@ describe('/api/users', () => {
   it("Get one user", async () => {
     const res = await request(app).get('/api/users')
 
-    expect(res.statusCode).toBe(200)
+    expect(res.statusCode).toBe(201)
     expect(res.body.length).toBe(1)
     expect(res.body[0]).toEqual({
       _id: "id_1",
@@ -62,6 +62,15 @@ describe('/api/users', () => {
     })
   })
   // TRY TO ADD THE SAME USER AGAIN
+  it('Try to add the same user again', async () => {
+    const res = await request(app).post('/api/users').send({ username: 'testuser' })
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({
+      _id: 'id_1',
+      username: 'testuser',
+    })
+  })
   // ADD NEXT USER
   // GET ALL USERS
   // TRY TO ADD USER WITH EMPTY NAME
