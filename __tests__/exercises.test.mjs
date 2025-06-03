@@ -50,7 +50,7 @@ describe('/api/users/:id/exercises', () => {
     expect(res.body).toEqual({
       _id: id_testuser,
       username: username,
-      date: '2023-10-01',
+      date: 'Sun Oct 01 2023',
       duration: 30,
       description: 'test exercise'
     })
