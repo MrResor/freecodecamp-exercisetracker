@@ -1,32 +1,82 @@
 import 'dotenv/config';
 import request from 'supertest'
-import { GenericContainer, TestContainers } from 'testcontainers'
+import { GenericContainer, Wait } from 'testcontainers'
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
-import { app } from '../src/express.mjs'
+let buildtContainer, container, imageName, app
 
-let container = await GenericContainer
+beforeAll(async () => {
+  buildtContainer = await GenericContainer
   .fromDockerfile(".", "Dockerfile_db")
   .build()
 
-const imageName = builtContainer.getImageName() // Save the image name
-
-beforeAll(async () => {
-
-  container = await container.withEnvironment({
+  container = await buildtContainer.withEnvironment({
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
     PGUSER: process.env.USER_LOGIN,
     PGPASSWORD: process.env.USER_PASSWORD,
   })
   .withExposedPorts(5432)
+  .withHealthCheck({
+    test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d exercise_tracker"],
+    interval: 10_000,
+    retries: 20,
+    start_interval: 30_000,
+    timeout: 3_000
+  })
+  .withWaitStrategy(Wait.forHealthCheck())
+  .withNetworkMode('host')
   .start()
   
-  let dbport = container.getMappedPort(5432)
+  imageName = container.getImageName // Save the image name
 
-}, 10_000)
+  //dbport = container.getMappedPort(5432)
+
+   // Import the app AFTER the container is up and env vars are set
+  const mod = await import('../src/express.mjs');
+  app = mod.app;
+
+}, 60_000)
+
+describe('/api/users', () => {
+  it('No users in database', async () => {
+    const res = await request(app).get('/api/users')
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual([])
+  })
+  // ADD USER
+  it('Add user', async () => {
+    const res = await request(app).post('/api/users').send({ username: 'testuser' })
+
+    expect(res.statusCode).toBe(201)
+    expect(res.body).toEqual({
+      _id: expect.stringMatching(/id_[0-9]+$/),
+      username: 'testuser',
+    })
+  })
+  // GET ONE USER
+  it("Get one user", async () => {
+    const res = await request(app).get('/api/users')
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body.length).toBe(1)
+    expect(res.body[0]).toEqual({
+      _id: "id_1",
+      username: 'testuser',
+    })
+  })
+  // TRY TO ADD THE SAME USER AGAIN
+  // ADD NEXT USER
+  // GET ALL USERS
+  // TRY TO ADD USER WITH EMPTY NAME
+})
 
 afterAll(async () => {
-  await container.stop();
+  if (container) {
+    try {
+      await container.stop()
+    } catch (err) { }
+  }
   if (imageName) {
     exec(`docker rmi -f ${imageName}`, (err, stdout, stderr) => {
       if (err) {
@@ -37,27 +87,3 @@ afterAll(async () => {
     });
   }
 });
-
-describe('/api/users', () => {
-  it('No users in database', async () => {
-    const res = await request(app).get('/api/users')
-
-    expect(res.statusCode).toBe(200)
-    expect(res.body).toEqual([])
-  })
-  // ADD USER
-  // it('Add user', async () => {
-  //   const res = await request(app).post('/api/users').send({ username: 'testuser1' })
-
-  //   expect(res.statusCode).toBe(201)
-  //   expect(res.body).toEqual({
-  //     _id: 'id_' + expect.any(Number),
-  //     username: 'testuser'
-  //   })
-  // })
-  // GET ONE USER
-  // TRY TO ADD THE SAME USER AGAIN
-  // ADD NEXT USER
-  // GET ALL USERS
-  // TRY TO ADD USER WITH EMPTY NAME
-})
