@@ -23,7 +23,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --global
+        run: npm install
+
+      - name: Install vitest globaly
+        run: npm install -g vitest
 
       - name: Audit dependencies
         run: npm audit fix
