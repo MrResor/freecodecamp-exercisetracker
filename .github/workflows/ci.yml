@@ -23,7 +23,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --global
 
       - name: Audit dependencies
         run: npm audit fix
@@ -35,5 +35,8 @@ jobs:
           echo "USER_PASSWORD=test" >> .env
           echo "DB_HOST=localhost" >> .env
 
-      - name: Run tests
-        run: npm test
+      - name: Run hello test
+        run: vitest --reporter=verbose hello.test.ts
+
+      - name: Run user tests
+        run: vitest --reporter=verbose user.test.ts
