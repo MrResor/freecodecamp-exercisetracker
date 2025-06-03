@@ -40,7 +40,7 @@ beforeAll(async () => {
 
 describe('/api/users/:id/exercises', () => {
   it('add exercise to an existing user', async () => {
-    const res = await request(app).get(`/api/users/${id_testuser}/exercises`).send({
+    const res = await request(app).post(`/api/users/${id_testuser}/exercises`).send({
       description: 'test exercise',
       duration: 30,
       date: '2023-10-01'
