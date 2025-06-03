@@ -41,8 +41,10 @@ jobs:
       - name: Run hello test
         run: vitest --reporter=verbose hello.test.mjs
 
-      - name: wait
-        run: sleep 5
-        
+      - name: remove container between tests
+        run: |
+          docker stop $(docker ps -a -q)
+          docker rm $(docker ps -a -q)
+
       - name: Run users tests
         run: vitest --reporter=verbose users.test.mjs
