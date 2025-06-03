@@ -48,3 +48,11 @@ jobs:
 
       - name: Run users tests
         run: vitest --reporter=verbose users.test.mjs
+    
+      - name: remove container between tests
+        run: |
+          docker stop $(docker ps -a -q) || true
+          docker rm $(docker ps -a -q) || true
+
+      - name: Run exercises tests
+        run: vitest --reporter=verbose exercises.test.mjs
