@@ -41,5 +41,5 @@ jobs:
       - name: Run hello test
         run: vitest --reporter=verbose hello.test.mjs
 
-      - name: Run user tests
-        run: vitest --reporter=verbose user.test.mjs
+      - name: Run users tests
+        run: vitest --reporter=verbose users.test.mjs
