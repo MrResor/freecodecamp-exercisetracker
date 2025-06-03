@@ -44,6 +44,7 @@ class Database {
     }
     let res = result.rows[0];
     res.username = username;
+    console.log(res);
     return [code, res];
   }
 
