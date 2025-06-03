@@ -39,7 +39,7 @@ jobs:
           echo "DB_HOST=localhost" >> .env
 
       - name: Run hello test
-        run: vitest --reporter=verbose hello.test.ts
+        run: vitest --reporter=verbose hello.test.mjs
 
       - name: Run user tests
-        run: vitest --reporter=verbose user.test.ts
+        run: vitest --reporter=verbose user.test.mjs
