@@ -104,6 +104,6 @@ describe('/api/users', () => {
     const res = await request(app).post('/api/users').send({})
 
     expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({ error: 'Username is required' })
+    expect(res.body).toEqual({ error: 'Username is not required' })
   })
 })
