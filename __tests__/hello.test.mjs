@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { describe, it, expect, beforeAll } from 'vitest'
 
 import {exec} from 'node:child_process'
 
@@ -53,15 +53,4 @@ describe('/api/hello', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({ greeting: 'hello API' })
   })
-})
-
-afterAll(async () => {
-  app = undefined
-  try {
-    await container.stop()
-  } catch (err) {
-    // This will catch errors like "terminating connection due to administrator command"
-    console.warn('Container stop error')
-    console.log(err)
-  }
 })
