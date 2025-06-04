@@ -1,15 +1,21 @@
 import 'dotenv/config';
 import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+
+import {exec} from 'node:child_process'
 
 let buildtContainer, container,  app
 
-beforeAll(async () => {
+async function cleanupContainer() {
+  exec('docker stop $(docker ps -a -q) || true', (err, stdout, stderr) => { })
+}
+
+async function setupContainer() {
   buildtContainer = await GenericContainer
   .fromDockerfile(".", "Dockerfile_db")
   .build()
-
+  
   container = await buildtContainer.withEnvironment({
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
     PGUSER: process.env.USER_LOGIN,
@@ -25,7 +31,14 @@ beforeAll(async () => {
   })
   .withWaitStrategy(Wait.forHealthCheck())
   .withNetworkMode('host')
-    .start()
+  .start()
+}
+
+beforeAll(async () => {
+  
+  await cleanupContainer()
+
+  await setupContainer()
   
   // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs');
@@ -40,4 +53,15 @@ describe('/api/hello', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({ greeting: 'hello API' })
   })
+})
+
+afterAll(async () => {
+  app = undefined
+  try {
+    await container.stop()
+  } catch (err) {
+    // This will catch errors like "terminating connection due to administrator command"
+    console.warn('Container stop error')
+    console.log(err)
+  }
 })
