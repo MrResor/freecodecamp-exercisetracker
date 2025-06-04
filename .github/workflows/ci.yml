@@ -39,4 +39,4 @@ jobs:
           echo "DB_HOST=localhost" >> .env
 
       - name: Run tests
-        run: npm run test
+        run: DEBUG=testcontainers* npm run test
