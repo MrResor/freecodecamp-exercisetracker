@@ -38,21 +38,5 @@ jobs:
           echo "USER_PASSWORD=test" >> .env
           echo "DB_HOST=localhost" >> .env
 
-      - name: Run hello test
-        run: vitest --reporter=verbose hello.test.mjs
-
-      - name: remove container between tests
-        run: |
-          docker stop $(docker ps -a -q) || true
-          docker rm $(docker ps -a -q) || true
-
-      - name: Run users tests
-        run: vitest --reporter=verbose users.test.mjs
-    
-      - name: remove container between tests
-        run: |
-          docker stop $(docker ps -a -q) || true
-          docker rm $(docker ps -a -q) || true
-
-      - name: Run exercises tests
-        run: vitest --reporter=verbose exercises.test.mjs
+      - name: Run tests
+        run: npm run test
