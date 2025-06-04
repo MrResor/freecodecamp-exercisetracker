@@ -6,7 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.mjs",
-		"test": "vitest --reporter=verbose --run"
+		"test": "vitest --reporter=github-actions --run"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
