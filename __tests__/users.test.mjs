@@ -3,6 +3,8 @@ import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
 import { describe, it, expect, beforeAll } from 'vitest'
 
+import {exec} from 'node:child_process'
+
 let buildtContainer, container, app
 
 async function cleanupContainer() {
