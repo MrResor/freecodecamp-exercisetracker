@@ -1,38 +1,16 @@
-import 'dotenv/config';
 import request from 'supertest'
-import { GenericContainer, Wait } from 'testcontainers'
 import { describe, it, expect, beforeAll } from 'vitest'
 
-let buildtContainer, container, app, id_testuser
+import { setupContainer } from './container.mjs'
+
+let container, app, id_testuser
 
 const username = 'testuser'
 
-async function setupContainer() {
-  buildtContainer = await GenericContainer
-  .fromDockerfile(".", "Dockerfile_db")
-  .build()
-  
-  container = await buildtContainer.withEnvironment({
-    POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
-    PGUSER: process.env.USER_LOGIN,
-    PGPASSWORD: process.env.USER_PASSWORD,
-  })
-  .withExposedPorts(5432)
-  .withHealthCheck({
-    test: ["CMD-SHELL", "pg_isready -U ${PGUSER} -d exercise_tracker"],
-    interval: 10_000,
-    retries: 20,
-    start_interval: 30_000,
-    timeout: 3_000
-  })
-  .withWaitStrategy(Wait.forHealthCheck())
-  .withNetworkMode('host')
-  .start()
-}
 
 beforeAll(async () => {
 
-  await setupContainer()
+  container = await setupContainer()
   
   // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs');
