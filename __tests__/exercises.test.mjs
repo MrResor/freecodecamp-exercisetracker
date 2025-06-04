@@ -3,16 +3,9 @@ import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
 import { describe, it, expect, beforeAll } from 'vitest'
 
-import {exec} from 'node:child_process'
-
 let buildtContainer, container, app, id_testuser
 
 const username = 'testuser'
-
-async function cleanupContainer() {
-  exec('docker stop $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-  exec('docker rm $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-}
 
 async function setupContainer() {
   buildtContainer = await GenericContainer
@@ -38,8 +31,6 @@ async function setupContainer() {
 }
 
 beforeAll(async () => {
-  
-  await cleanupContainer()
 
   await setupContainer()
   
@@ -51,6 +42,12 @@ beforeAll(async () => {
   id_testuser = res.body._id
 
 }, 60_000)
+
+afterAll(async () => {
+  if (container) {
+    await container.stop();
+  }
+})
 
 describe('/api/users/:id/exercises', () => {
   it('add exercise to an existing user', async () => {

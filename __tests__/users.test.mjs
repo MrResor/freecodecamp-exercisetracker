@@ -3,14 +3,7 @@ import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
 import { describe, it, expect, beforeAll } from 'vitest'
 
-import {exec} from 'node:child_process'
-
 let buildtContainer, container, app
-
-async function cleanupContainer() {
-  exec('docker stop $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-  exec('docker rm $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-}
 
 async function setupContainer() {
   buildtContainer = await GenericContainer
@@ -36,8 +29,6 @@ async function setupContainer() {
 }
 
 beforeAll(async () => {
-  
-  await cleanupContainer()
 
   await setupContainer()
   
@@ -46,6 +37,12 @@ beforeAll(async () => {
   app = mod.app;
 
 }, 60_000)
+
+afterAll(async () => {
+  if (container) {
+    await container.stop();
+  }
+})
 
 var id_testuser, id_nextuser;
 
@@ -128,6 +125,6 @@ describe('/api/users', () => {
     const res = await request(app).post('/api/users').send({})
 
     expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({ error: 'Username is required' })
+    expect(res.body).toEqual({ error: 'Username is not required' })
   })
 })

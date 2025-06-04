@@ -1,16 +1,9 @@
 import 'dotenv/config';
 import request from 'supertest'
 import { GenericContainer, Wait } from 'testcontainers'
-import { describe, it, expect, beforeAll } from 'vitest'
-
-import {exec} from 'node:child_process'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 let buildtContainer, container,  app
-
-async function cleanupContainer() {
-  exec('docker stop $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-  exec('docker rm $(docker ps -a -q) || true', (err, stdout, stderr) => { })
-}
 
 async function setupContainer() {
   buildtContainer = await GenericContainer
@@ -36,8 +29,6 @@ async function setupContainer() {
 }
 
 beforeAll(async () => {
-  
-  await cleanupContainer()
 
   await setupContainer()
   
@@ -46,6 +37,12 @@ beforeAll(async () => {
   app = mod.app;
 
 }, 60_000)
+
+afterAll(async () => {
+  if (container) {
+    await container.stop();
+  }
+})
 
 describe('/api/hello', () => {
   it('should say hello', async () => {
