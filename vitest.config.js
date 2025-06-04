@@ -4,10 +4,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      }
-    }
+    fileParallelism: false,
   }
 })
