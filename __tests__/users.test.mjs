@@ -9,6 +9,7 @@ let buildtContainer, container, app
 
 async function cleanupContainer() {
   exec('docker stop $(docker ps -a -q) || true', (err, stdout, stderr) => { })
+  exec('docker rm $(docker ps -a -q) || true', (err, stdout, stderr) => { })
 }
 
 async function setupContainer() {
