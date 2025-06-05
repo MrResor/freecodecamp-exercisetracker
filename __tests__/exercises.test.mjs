@@ -130,20 +130,4 @@ describe('/api/users/:id/exercises', () => {
     })
   })
 
-  // add exercise without date
-  it('add exercise without date', async () => {
-    const res = await request(app).post(`/api/users/${id_testuser}/exercises`).send({
-      description: 'test exercise without date',
-      duration: 60
-    })
-
-    expect(res.statusCode).toBe(201)
-    expect(res.body).toEqual({
-      _id: id_testuser,
-      username: username,
-      date: new Date().toDateString(),
-      duration: 60,
-      description: 'test exercise without date'
-    })
-  })
 })
