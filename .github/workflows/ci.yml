@@ -39,4 +39,4 @@ jobs:
           echo "DB_HOST=localhost" >> .env
 
       - name: Run tests
-        run: vitest --run hello.test.mjs
+        run: npm run test
