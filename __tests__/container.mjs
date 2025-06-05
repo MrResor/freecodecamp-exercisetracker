@@ -11,7 +11,7 @@ async function setupContainer() {
     PGUSER: process.env.USER_LOGIN,
     PGPASSWORD: process.env.USER_PASSWORD,
   })
-  .withExposedPorts(5432)
+  .withExposedPorts(process.env.DB_PORT)
   .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
   .withNetworkMode('host')
   .start()

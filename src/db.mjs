@@ -31,7 +31,7 @@ class Database {
       user: process.env.USER_LOGIN,
       password: process.env.USER_PASSWORD,
       host: process.env.DB_HOST,
-      port: 5432,
+      port: process.env.DB_PORT,
       database: 'exercise_tracker',
     });
 

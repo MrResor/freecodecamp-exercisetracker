@@ -10,6 +10,8 @@ const username = 'testuser'
 
 beforeAll(async () => {
 
+  vi.stubEnv('DB_PORT', 5432 + Number(process.env.VITEST_WORKER_ID));
+
   container = await setupContainer()
   
   // Import the app AFTER the container is up and env vars are set
@@ -25,6 +27,7 @@ afterAll(async () => {
   if (container) {
     await container.stop();
   }
+  vi.unstubAllEnv()
 })
 
 describe('/api/users/:id/exercises', () => {
