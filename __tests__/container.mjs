@@ -18,8 +18,10 @@ async function setupContainer() {
   .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
   .start()
 
-  container.getFirstMappedPort()
-
+  const port = container.getFirstMappedPort()
+  
+  console.log(`Container started on port ${port}`)
+  
   return container
 }
 
