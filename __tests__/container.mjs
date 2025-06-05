@@ -15,12 +15,9 @@ async function setupContainer() {
     PGPORT: Number(process.env.DB_PORT),
   })
   .withExposedPorts(Number(process.env.DB_PORT))
+  .withNetworkMode('host')
   .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
   .start()
-
-  const port = container.getMappedPort(Number(process.env.DB_PORT))
-  
-  console.log(`Container started on port ${port}`)
 
   return container
 }
