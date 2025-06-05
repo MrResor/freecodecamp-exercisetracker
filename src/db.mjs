@@ -35,6 +35,8 @@ class Database {
       database: 'exercise_tracker',
     });
 
+    console.log(`Connecting to database at ${process.env.DB_HOST}:${process.env.DB_PORT}`)
+
     this.Pool.on('connect', (_client) => {
       // On each new client initiated, need to register for error(this is a serious bug on pg, the client throw errors although it should not)
       _client.on('error', (err) => {
