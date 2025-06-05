@@ -10,11 +10,13 @@ async function setupContainer() {
     POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
     PGUSER: process.env.USER_LOGIN,
     PGPASSWORD: process.env.USER_PASSWORD,
+    PGPORT: Number(process.env.DB_PORT),
   })
   .withExposedPorts(Number(process.env.DB_PORT))
   .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
-  .withNetworkMode('host')
   .start()
+
+  container.getFirstMappedPort()
 
   return container
 }
