@@ -23,7 +23,7 @@ afterAll(async () => {
   if (container) {
     await container.stop();
   }
-  vi.unstubAllEnv()
+  vi.unstubAllEnvs()
 })
 
 var id_testuser, id_nextuser;

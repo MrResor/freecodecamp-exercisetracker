@@ -27,7 +27,7 @@ afterAll(async () => {
   if (container) {
     await container.stop();
   }
-  vi.unstubAllEnv()
+  vi.unstubAllEnvs()
 })
 
 describe('/api/users/:id/exercises', () => {
