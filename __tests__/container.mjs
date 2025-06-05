@@ -2,9 +2,7 @@ import 'dotenv/config'
 import { GenericContainer, Wait } from 'testcontainers'
 
 async function setupContainer() {
-  console.log(`Port: ${process.env.DB_PORT}`)
-
-  Container
+  const buildtContainer = await GenericContainer
   .fromDockerfile(".", "Dockerfile_db")
   .build()
   
@@ -13,7 +11,7 @@ async function setupContainer() {
     PGUSER: process.env.USER_LOGIN,
     PGPASSWORD: process.env.USER_PASSWORD,
   })
-  .withExposedPorts(process.env.DB_PORT)
+  .withExposedPorts(Number(process.env.DB_PORT))
   .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
   .withNetworkMode('host')
   .start()
