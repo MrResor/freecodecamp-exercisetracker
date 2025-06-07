@@ -43,6 +43,28 @@ describe('/api/users/:id/logs', () => {
     })
   })
 
-  
+  it('Get logs for user with exercises', async () => {
+    const exercise = {
+      description: 'Running',
+      duration: 30,
+      date: '2023-10-01'
+    }
+
+    await request(app).post(`/api/users/${id_testuser}/exercises`).send(exercise)
+
+    const res = await request(app).get(`/api/users/${id_testuser}/logs`)
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toEqual({
+      "_id": id_testuser,
+      "username": username,
+      "count": 1,
+      "log": [{
+        "description": exercise.description,
+        "duration": exercise.duration,
+        "date": new Date(exercise.date).toDateString()
+      }]
+    })
+  })
 
 })
