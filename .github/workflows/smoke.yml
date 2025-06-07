@@ -1,0 +1,37 @@
+name: smoke
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup test .env file
+        run: |
+          echo "POSTGRES_PASSWORD=admin" >> .env
+          echo "USER_LOGIN=test" >> .env
+          echo "USER_PASSWORD=test" >> .env
+          echo "DB_HOST=db" >> .env
+
+      - name: Start docker container
+        run: docker compose up -d
+
+      - name: Wait for API to be ready and run smoke test
+        run: |
+          for i in {1..10}; do
+            response=$(curl --silent --show-error --fail http://localhost:10003/api/hello || true)
+            if [ "$response" = '{"greeting":"hello API"}' ]; then
+              echo "Container is running and API is responding"
+              exit 0
+            fi
+            echo "Waiting for container to start $i/10"
+            sleep 1
+          done
+          echo "Container did not start in time"
+          exit 1

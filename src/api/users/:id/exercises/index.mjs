@@ -10,10 +10,11 @@ exercises.post('/api/users/:id/exercises', async (req, res) => {
     let { description, duration, date } = body;
 
     // sanitize inputs
-    duration = parseInt(duration);
-    if (!description || !duration) {
+  
+    if (duration === undefined || !description) {
         return res.status(400).json({ error: 'Description and duration are required' });
     }
+    duration = parseInt(duration);
     if (isNaN(duration)) {
         return res.status(400).json({ error: 'Duration must be a number' });
     }
