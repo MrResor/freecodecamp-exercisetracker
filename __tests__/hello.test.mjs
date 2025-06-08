@@ -1,27 +1,24 @@
-import 'dotenv/config';
+import 'dotenv/config'
 import request from 'supertest'
-import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { setupContainer } from './container.mjs'
 
-let container, app, port
-
+let app, container, port
 
 beforeAll(async () => {
+  [container, port] = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
 
-  container, port = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
-  
-  vi.stubEnv('DB_PORT', port.toString());
+  vi.stubEnv('DB_PORT', port.toString())
 
   // Import the app AFTER the container is up and env vars are set
-  const mod = await import('../src/express.mjs');
-  app = mod.app;
-
+  const mod = await import('../src/express.mjs')
+  app = mod.app
 }, 60_000)
 
 afterAll(async () => {
   if (container) {
-    await container.stop();
+    await container.stop()
   }
   vi.unstubAllEnvs()
 })

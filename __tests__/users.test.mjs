@@ -1,32 +1,27 @@
-import 'dotenv/config';
+import 'dotenv/config'
 import request from 'supertest'
-import { describe, it, expect, beforeAll } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { setupContainer } from './container.mjs'
 
-let container, app, port
-
+let app, container, idNextuser, idTestuser, port
 
 beforeAll(async () => {
+  [container, port] = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
 
-  container, port = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
-    
-  vi.stubEnv('DB_PORT', port.toString());
+  vi.stubEnv('DB_PORT', port.toString())
 
   // Import the app AFTER the container is up and env vars are set
-  const mod = await import('../src/express.mjs');
-  app = mod.app;
-
+  const mod = await import('../src/express.mjs')
+  app = mod.app
 }, 60_000)
 
 afterAll(async () => {
   if (container) {
-    await container.stop();
+    await container.stop()
   }
   vi.unstubAllEnvs()
 })
-
-var id_testuser, id_nextuser;
 
 describe('/api/users', () => {
   it('No users in database', async () => {
@@ -39,23 +34,23 @@ describe('/api/users', () => {
   it('Add user', async () => {
     const res = await request(app).post('/api/users').send({ username: 'testuser' })
 
-    id_testuser = res.body._id
+    idTestuser = res.body._id
 
     expect(res.statusCode).toBe(201)
     expect(res.body).toEqual({
       _id: expect.stringMatching(/id_[0-9]+$/),
-      username: 'testuser',
+      username: 'testuser'
     })
   })
   // GET ONE USER
-  it("Get one user", async () => {
+  it('Get one user', async () => {
     const res = await request(app).get('/api/users')
 
     expect(res.statusCode).toBe(200)
     expect(res.body.length).toBe(1)
     expect(res.body[0]).toEqual({
-      _id: id_testuser,
-      username: 'testuser',
+      _id: idTestuser,
+      username: 'testuser'
     })
   })
   // TRY TO ADD THE SAME USER AGAIN
@@ -65,19 +60,19 @@ describe('/api/users', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body).toEqual({
       _id: 'id_1',
-      username: 'testuser',
+      username: 'testuser'
     })
   })
   // ADD NEXT USER
   it('Add next user', async () => {
     const res = await request(app).post('/api/users').send({ username: 'nextuser' })
 
-    id_nextuser = res.body._id
+    idNextuser = res.body._id
 
     expect(res.statusCode).toBe(201)
     expect(res.body).toEqual({
       _id: expect.stringMatching(/id_[0-9]+$/),
-      username: 'nextuser',
+      username: 'nextuser'
     })
   })
   // GET ALL USERS
@@ -87,12 +82,12 @@ describe('/api/users', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body.length).toBe(2)
     expect(res.body[0]).toEqual({
-      _id: id_testuser,
-      username: 'testuser',
+      _id: idTestuser,
+      username: 'testuser'
     })
     expect(res.body[1]).toEqual({
-      _id: id_nextuser,
-      username: 'nextuser',
+      _id: idNextuser,
+      username: 'nextuser'
     })
   })
   // TRY TO ADD USER WITH EMPTY NAME

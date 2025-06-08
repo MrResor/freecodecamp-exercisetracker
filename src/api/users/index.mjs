@@ -1,26 +1,27 @@
-import express from 'express';
-import { db } from '../../db.mjs';
+import express from 'express'
 
-const users = express.Router();
+import { db } from '../../db.mjs'
 
-const path = '/api/users';
+const users = express.Router()
+
+const path = '/api/users'
 
 users.post(path, async (req, res) => {
-    const { username } = req.body;
-    
-    // sanitize inputs
-    if (!username) {
-        return res.status(400).json({ error: 'Username is required' });
-    }
+  const { username } = req.body
 
-    let response = await db.add_user(username);
+  // sanitize inputs
+  if (!username) {
+    return res.status(400).json({ error: 'Username is required' })
+  }
 
-    res.status(response[0]).json(response[1]);
-});
+  const response = await db.add_user(username)
+
+  res.status(response[0]).json(response[1])
+})
 
 users.get(path, async (_, res) => {
-    let response = await db.get_users();
-    res.status(200).json(response);
-});
+  const response = await db.get_users()
+  res.status(200).json(response)
+})
 
-export { users };
+export { users }
