@@ -7,7 +7,8 @@
 	"scripts": {
 		"start": "node index.mjs",
 		"test": "vitest --reporter=github-actions --reporter=verbose --run",
-        "test1": "vitest --reporter=verbose --run hello.test.mjs"
+		"standard": "standard",
+        "lint": "standard --fix"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -15,6 +16,7 @@
 		"express": "^4.16.4",
 		"JSON": "^1.0.0",
 		"pg": "^8.15.5",
+		"standard": "^17.1.2",
 		"supertest": "^7.1.1",
 		"swagger-ui-express": "^5.0.1",
 		"testcontainers": "^11.0.0",
