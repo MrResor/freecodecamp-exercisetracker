@@ -1,6 +1,8 @@
 import 'dotenv/config'
 import { GenericContainer, Wait } from 'testcontainers'
 
+var test
+
 async function setupContainer (dbPort) {
   const buildtContainer = await GenericContainer
     .fromDockerfile('.', 'Dockerfile_db')
