@@ -37,6 +37,12 @@ paths:
                 username: "exercise_tracker"
       responses:
         200:
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        201:
           description: Successful operation
           content:
             application/json:
@@ -107,7 +113,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: #/components/schemas/Exercise
+                $ref: "#/components/schemas/Exercise"
         
         400:
           description: Incorrect request
@@ -144,7 +150,7 @@ paths:
                 example:
                   error: User not found
 
-  /api/users/{id}/log:
+  /api/users/{id}/logs:
     get:
       tags:
         - endpoints
@@ -157,23 +163,51 @@ paths:
           description: ID of the user to get the log for
           schema:
             type: string
+          examples:
+            validId:
+              summary: Valid user ID
+              value: id_12
+            invalidId:
+              summary: Invalid user ID
+              value: invalid_id
         - name: from
           in: query
           description: Filter exercises from this date (YYYY-MM-DD)
           schema:
             type: string
             format: date-time
+          examples:
+            validFrom:
+              summary: Valid From date
+              value: 2023-10-01
+            invalidFrom:
+              summary: Invalid From date
+              value: invalid_date
         - name: to
           in: query
           description: Filter exercises to this date (YYYY-MM-DD)
           schema:
             type: string
             format: date-time
+          examples:
+            validTo:
+              summary: Valid To date
+              value: 2023-10-31
+            invalidTo:
+              summary: Invalid To date
+              value: invalid_date
         - name: limit
           in: query
           description: Limit the number of exercises returned
           schema:
             type: integer
+          examples:
+            validLimit:
+              summary: Valid Limit
+              value: 5
+            invalidLimit:
+              summary: Invalid Limit
+              value: invalid_limit
 
       responses:
         200:
@@ -190,7 +224,7 @@ paths:
                   log:
                     type: array
                     items:
-                      $ref: #/components/schemas/Log
+                      $ref: "#/components/schemas/Log"
                 example:
                   username: exercise_tracker
                   count: 2
