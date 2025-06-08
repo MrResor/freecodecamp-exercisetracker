@@ -1,6 +1,6 @@
-import pg from 'pg'
 import 'dotenv/config'
 import 'JSON'
+import pg from 'pg'
 
 import { dbLogger } from './logger.mjs'
 

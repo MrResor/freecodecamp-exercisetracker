@@ -1,4 +1,5 @@
 import express from 'express'
+
 import { db } from '../../../../db.mjs'
 
 const exercises = express.Router()

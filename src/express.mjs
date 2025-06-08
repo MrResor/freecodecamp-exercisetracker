@@ -3,12 +3,12 @@ import express from 'express'
 import path from 'path'
 
 import { docs } from './api/docs/index.mjs'
-import { exercises } from './api/users/:id/exercises/index.mjs'
 import { hello } from './api/hello/index.mjs'
-import { logger } from './logger.mjs'
+import { exercises } from './api/users/:id/exercises/index.mjs'
+import { users } from './api/users/index.mjs'
 import { logs } from './api/users/:id/logs/index.mjs'
 import { mainView } from './index.mjs'
-import { users } from './api/users/index.mjs'
+import { logger } from './logger.mjs'
 
 const app = express()
 const router = express.Router()
