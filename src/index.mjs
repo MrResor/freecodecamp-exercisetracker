@@ -1,9 +1,9 @@
-import express from 'express';
+import express from 'express'
 
-const mainView = express.Router();
+const mainView = express.Router()
 
 mainView.get('/', (_, res) => {
-    res.sendFile('./views/index.html', { root: '.' });
-});
+  res.sendFile('./views/index.html', { root: '.' })
+})
 
-export { mainView };
+export { mainView }
