@@ -4,15 +4,15 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 import { setupContainer } from './container.mjs'
 
-let container,  app
+let container, app, port
 
 
 beforeAll(async () => {
 
-  vi.stubEnv('DB_PORT', 5432 + Number(process.env.VITEST_WORKER_ID));
-
-  container = await setupContainer()
+  container, port = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
   
+  vi.stubEnv('DB_PORT', port.toString());
+
   // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs');
   app = mod.app;

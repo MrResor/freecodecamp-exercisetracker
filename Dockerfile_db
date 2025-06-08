@@ -1,3 +1,2 @@
 FROM postgres:latest
-EXPOSE 5432
 COPY ./setup/db-init.sh ./docker-entrypoint-initdb.d/db-init.sh

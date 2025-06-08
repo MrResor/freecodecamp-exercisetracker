@@ -6,7 +6,8 @@
 	"type": "module",
 	"scripts": {
 		"start": "node index.mjs",
-		"test": "vitest --reporter=github-actions --reporter=verbose --run"
+		"test": "vitest --reporter=github-actions --reporter=verbose --run",
+        "test1": "vitest --reporter=verbose --run hello.test.mjs"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -16,7 +17,7 @@
 		"pg": "^8.15.5",
 		"supertest": "^7.1.1",
 		"swagger-ui-express": "^5.0.1",
-		"testcontainers": "11.0.0",
+		"testcontainers": "^11.0.0",
 		"vitest": "^3.1.4",
 		"winston": "^3.17.0",
 		"yaml": "^2.7.1"
