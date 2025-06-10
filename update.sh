@@ -1,3 +1,5 @@
+git checkout main
+
 sudo docker compose down
 sudo docker rmi freecodecamp-exercisetracker-api freecodecamp-exercisetracker-db
 
