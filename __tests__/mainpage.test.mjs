@@ -27,7 +27,7 @@ describe('/', () => {
     const res = await request(app).get('/')
 
     expect(res.statusCode).toBe(200)
-    expect(res.text).toContain('<title>Timestamp Microservice | freeCodeCamp.org</title>')
+    expect(res.text).toContain('<title>Exercise Tracker | freeCodeCamp</title>')
   })
 
   it('should return 404 for non-existing route', async () => {
@@ -42,8 +42,10 @@ describe('/', () => {
   it('should return 404 for non-existing API route', async () => {
     const res = await request(app).get('/api/non-existing-route')
 
-    expect(res.statusCode).toBe(400)
-    expect(res.body).toEqual({ error: 'Invalid Date' })
+    expect(res.statusCode).toBe(404)
+    expect(res.text).toContain('<title>Error</title>')
+    expect(res.headers['content-type']).toContain('text/html')
+    expect(res.text).toContain('Cannot GET /api/non-existing-route')
   })
 })
 
