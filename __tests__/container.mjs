@@ -13,12 +13,11 @@ async function setupContainer (dbPort) {
     PGPORT: Number(dbPort)
   })
     .withExposedPorts(Number(dbPort))
+    .withNetworkMode('host')
     .withWaitStrategy(Wait.forLogMessage('[1] LOG:  database system is ready to accept connections'))
     .start()
 
-  const port = container.getMappedPort(Number(dbPort))
-
-  return [container, port]
+  return [container, dbPort]
 }
 
 export { setupContainer }
