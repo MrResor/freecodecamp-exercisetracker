@@ -38,7 +38,6 @@ router.use((req, _, next) => {
     }
   })
 
-  const ip = Object.hasOwn(req.headers, 'x-forwarded-for') ? req.headers['x-forwarded-for'] : req.ip
   let query = ''
   let i = 0
   for (const [key, value] of Object.entries(req.query)) {
@@ -51,7 +50,7 @@ router.use((req, _, next) => {
     i++
   }
 
-  const msg = `${req.method} ${req.path}${query} - ${ip}`
+  const msg = `${req.method} ${req.path}${query} - ${req.headers['x-forwarded-for'] || req.ip}`
 
   if (hasRouteToHandle) {
     logger.http(msg)
