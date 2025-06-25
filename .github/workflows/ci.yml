@@ -33,7 +33,6 @@ jobs:
           echo "POSTGRES_PASSWORD=admin" >> .env
           echo "USER_LOGIN=test" >> .env
           echo "USER_PASSWORD=test" >> .env
-          echo "DB_HOST=localhost" >> .env
 
       - name: Run tests
         run: npm run test
