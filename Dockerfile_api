@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:current-alpine
 EXPOSE 3000
 COPY . ./program
 WORKDIR /program
