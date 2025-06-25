@@ -19,7 +19,7 @@ beforeAll(async () => {
 afterAll(async () => {
   if (container) {
     await container.stop()
-}
+  }
   vi.unstubAllEnvs()
 })
 
