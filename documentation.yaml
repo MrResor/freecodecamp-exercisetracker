@@ -108,7 +108,7 @@ paths:
                 duration: 30
                 date: 2023-10-01
       responses:
-        200:
+        201:
           description: Successful operation
           content:
             application/json:
