@@ -18,9 +18,7 @@ beforeAll(async () => {
 }, 60_000)
 
 afterAll(async () => {
-  if (container) {
-    await container.stop()
-  }
+  if (container) await container.stop()
   vi.unstubAllEnvs()
 })
 
