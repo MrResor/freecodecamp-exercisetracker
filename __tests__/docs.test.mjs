@@ -9,6 +9,7 @@ beforeAll(async () => {
   [container, port] = await setupContainer(5432 + Number(process.env.VITEST_WORKER_ID))
 
   vi.stubEnv('DB_PORT', port.toString())
+  vi.stubEnv('DB_HOST', 'localhost')
 
   // Import the app AFTER the container is up and env vars are set
   const mod = await import('../src/express.mjs')
@@ -18,7 +19,7 @@ beforeAll(async () => {
 afterAll(async () => {
   if (container) {
     await container.stop()
-  }
+}
   vi.unstubAllEnvs()
 })
 
