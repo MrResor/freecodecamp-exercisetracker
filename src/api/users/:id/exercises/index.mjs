@@ -11,21 +11,14 @@ exercises.post('/api/users/:id/exercises', async (req, res) => {
 
   // sanitize inputs
 
-  if (duration === undefined || !description) {
-    return res.status(400).json({ error: 'Description and duration are required' })
-  }
+  if (duration === undefined || !description) return res.status(400).json({ error: 'Description and duration are required' })
+  
   duration = parseInt(duration)
-  if (isNaN(duration)) {
-    return res.status(400).json({ error: 'Duration must be a number' })
-  }
-  if (date && isNaN(Date.parse(date))) {
-    return res.status(400).json({ error: 'Date must be a valid date' })
-  }
-  if (date) {
-    date = new Date(date)
-  } else {
-    date = new Date()
-  }
+
+  if (isNaN(duration)) { return res.status(400).json({ error: 'Duration must be a number' }) }
+  if (date && isNaN(Date.parse(date))) { return res.status(400).json({ error: 'Date must be a valid date' }) }
+
+  date = date ? new Date(date) : new Date()
 
   date = date.toDateString()
   const response = await db.add_exercise(id, description, duration, date)
