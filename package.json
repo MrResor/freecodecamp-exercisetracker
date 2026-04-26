@@ -8,19 +8,19 @@
 		"start": "node index.mjs",
 		"test": "vitest --reporter=github-actions --reporter=verbose --run",
 		"standard": "standard",
-        "lint": "standard --fix"
+		"lint": "standard --fix"
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
-		"dotenv": "^8.6.0",
-		"express": "^4.16.4",
+		"dotenv": "^17.4.2",
+		"express": "^5.2.1",
 		"JSON": "^1.0.0",
 		"pg": "^8.15.5",
 		"standard": "^17.1.2",
 		"supertest": "^7.1.1",
 		"swagger-ui-express": "^5.0.1",
-		"testcontainers": "^11.0.0",
-		"vitest": "^3.1.4",
+		"testcontainers": "^11.14.0",
+		"vitest": "^4.1.5",
 		"winston": "^3.17.0",
 		"yaml": "^2.7.1"
 	},
