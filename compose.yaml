@@ -25,7 +25,7 @@ services:
       - PGUSER=${USER_LOGIN}
       - PGPASSWORD=${USER_PASSWORD}
     volumes:
-      - pg-volume:/var/lib/postgresql/data
+      - pg-volume:/var/lib/postgresql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${USER_LOGIN} -d exercise_tracker" ]
       interval: 10s
