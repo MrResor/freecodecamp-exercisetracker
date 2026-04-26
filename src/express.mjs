@@ -26,17 +26,22 @@ router.use(express.urlencoded({ extended: true }))
 router.use(express.static('public'))
 
 router.use((req, _, next) => {
+  const staticPaths = ['/api/docs/swagger-ui.css', '/api/docs/swagger-ui-bundle.js', '/api/docs/swagger-ui-standalone-preset.js', '/api/docs/swagger-ui-init.js', '/api/docs/favicon-32x32.png', '/favicon.ico']
   let hasRouteToHandle = null
   router.stack.forEach((stackItem) => {
     // check if current rout path matches route request path
     if (stackItem.handle?.stack !== undefined) {
       stackItem?.handle.stack.forEach((innerItem) => {
-        if (innerItem.regexp.test(req.path)) {
+        if (innerItem.route?.path === req.path) {
           hasRouteToHandle = true
         }
       })
     }
   })
+
+  if (staticPaths.includes(req.path)) {
+    hasRouteToHandle = true
+  }
 
   let query = ''
   let i = 0
