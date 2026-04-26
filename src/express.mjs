@@ -26,7 +26,7 @@ router.use(express.urlencoded({ extended: true }))
 router.use(express.static('public'))
 
 router.use((req, _, next) => {
-  const static_paths = ['/api/docs/swagger-ui.css', '/api/docs/swagger-ui-bundle.js', '/api/docs/swagger-ui-standalone-preset.js', '/api/docs/swagger-ui-init.js', '/api/docs/favicon-32x32.png', '/favicon.ico']
+  const staticPaths = ['/api/docs/swagger-ui.css', '/api/docs/swagger-ui-bundle.js', '/api/docs/swagger-ui-standalone-preset.js', '/api/docs/swagger-ui-init.js', '/api/docs/favicon-32x32.png', '/favicon.ico']
   let hasRouteToHandle = null
   router.stack.forEach((stackItem) => {
     // check if current rout path matches route request path
@@ -39,7 +39,7 @@ router.use((req, _, next) => {
     }
   })
 
-  if (static_paths.includes(req.path)) {
+  if (staticPaths.includes(req.path)) {
     hasRouteToHandle = true
   }
 
